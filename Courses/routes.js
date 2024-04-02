@@ -1,5 +1,5 @@
-import Database from "../Database/index.js";
-export default function CourseRoutes(app) {
+import Database from "../Kanbas/Database/index.js";
+export default function CourseRoutesFromLecture(app) {
   
   const finadAllCourses = (req, res) => {
     res.json(Database.courses);
