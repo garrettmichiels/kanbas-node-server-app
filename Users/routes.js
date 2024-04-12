@@ -1,5 +1,5 @@
 import * as dao from "./dao.js";
-let currentUser = null;
+// let currentUser = null;
 export default function UserRoutes(app) {
 const createUser = async (req, res) => {
     const user = await dao.createUser(req.body);
@@ -20,32 +20,53 @@ const createUser = async (req, res) => {
   
   const updateUser = async (req, res) => {
     const { userId } = req.params;
+    
+    // Check if exists
+    // await dao.findUserByCredentials(username, password);
+    // if (req.body.username == ) {
+    // }
     const status = await dao.updateUser(userId, req.body);
-    currentUser = await dao.findUserById(userId);
+    const currentUser = await dao.findUserById(userId);
     res.json(status);
   };
 
   const signup = async (req, res) => {
-    const { username, password } = req.body;
-    currentUser = await dao.findUserByCredentials(username, password);
+    const user = await dao.findUserByUsername(req.body.username);
+    if (user) {
+      res.status(400).json(
+        { message: "Username already taken" });
+    }
+    const currentUser = await dao.createUser(req.body);
+    req.session["currentUser"] = currentUser;
     res.json(currentUser);
-
   };
 
   const signin = async (req, res) => {
     const { username, password } = req.body;
-    currentUser = await dao.findUserByCredentials(username, password);
-    res.json(currentUser);
-
-
+    const currentUser = await dao.findUserByCredentials(username, password);
+    if (currentUser) {
+      req.session["currentUser"] = currentUser;
+      console.log("req.session", req.session);
+      res.json(currentUser);
+    } else {
+      console.log("signin error", 401);
+      res.status(401).json(
+        { message: "A user with those credentials don't exist" });
+    }
   };
 
    const signout = (req, res) => {
-    currentUser = null;
+    req.session.destroy();
     res.sendStatus(200);
   };
    
    const profile = (req, res) => {
+    const currentUser = req.session.currentUser
+    console.log("Profile", req.session);
+    if (!currentUser) {
+      res.sendStatus(401);
+      return;
+    }
     res.json(currentUser);
 };
   app.post("/api/users", createUser);
