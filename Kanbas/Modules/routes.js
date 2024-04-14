@@ -1,14 +1,14 @@
-import db from "../Database/index.js";
 import * as dao from "./dao.js";
 function ModuleRoutes(app) {
   
     // Update module
     app.put("/api/modules/:mid", async (req, res) => {
       const { moduleId } = req.params;
-      console.log("module", req.body);
-      console.log("module", req.body.id);
+      console.log("module to update to", req.body);
+      // console.log("module", req.body.id);
       const status = await dao.updateModule(moduleId, req.body);
       res.json(status);
+      console.log("STATUS", status);
       });
     
     // Delete Module
@@ -21,7 +21,7 @@ function ModuleRoutes(app) {
     //Create module for course with id cid
     app.post("/api/courses/:cid/modules", async (req, res) => {
         const { cid } = req.params;
-        console.log("req.body", req.body);
+        // console.log("req.body", req.body);
         const newModule = {
           ...req.body,
           course: cid,
