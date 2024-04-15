@@ -45,6 +45,7 @@ const createUser = async (req, res) => {
   const signin = async (req, res) => {
     const { username, password } = req.body;
     const currentUser = await dao.findUserByCredentials(username, password);
+    console.log("User signing in", currentUser);
     if (currentUser) {
       req.session["currentUser"] = currentUser;
       console.log("req.session", req.session);
