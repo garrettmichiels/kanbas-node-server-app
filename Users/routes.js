@@ -25,6 +25,7 @@ const createUser = async (req, res) => {
     // await dao.findUserByCredentials(username, password);
     // if (req.body.username == ) {
     // }
+    console.log("User to Update to", req.body);
     const status = await dao.updateUser(userId, req.body);
     const currentUser = await dao.findUserById(userId);
     res.json(status);
